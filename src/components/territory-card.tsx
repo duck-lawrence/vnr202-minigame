@@ -100,7 +100,7 @@ export function TerritoryCard({
           <span className="mt-0.5 flex items-center gap-1 text-sm font-semibold text-muted">
             {status === "captured" && owner ? (
               <span style={{ color: ownerDefinition?.color }}>
-                Nhóm {owner.slot}
+                {owner.name}
               </span>
             ) : (
               <>

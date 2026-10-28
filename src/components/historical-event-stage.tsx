@@ -278,7 +278,7 @@ export function HistoricalEventStage({ state, dispatch }: HistoricalEventStagePr
 
           {isResult ? (
             <div className="mt-4 rounded-2xl border border-green/25 bg-green-soft px-5 py-4">
-              <p className="font-extrabold text-green">{winner ? `Nhóm ${winner.slot} trả lời đúng · +${event.points} điểm` : "Đã công bố đáp án đúng · không cộng điểm"}</p>
+              <p className="font-extrabold text-green">{winner ? `${winner.name} trả lời đúng · +${event.points} điểm` : "Đã công bố đáp án đúng · không cộng điểm"}</p>
               <p className="mt-1 text-sm text-ink-soft">{event.explanation}</p>
               <p className="mt-1 text-sm text-muted">Nguồn: {event.sourcePage}</p>
             </div>
@@ -301,7 +301,7 @@ export function HistoricalEventStage({ state, dispatch }: HistoricalEventStagePr
                   const attempted = state.eventAttemptedTeamIds.includes(team.id);
                   return (
                     <button key={team.id} type="button" disabled={attempted} onClick={() => chooseTeam(team.id)} className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/8 px-3 py-3 text-left font-bold hover:bg-white/15 disabled:opacity-30">
-                      <TeamBadge slot={team.slot} size="sm" /> Nhóm {team.slot}
+                      <TeamBadge slot={team.slot} size="sm" /> {team.name}
                     </button>
                   );
                 })}
@@ -312,7 +312,7 @@ export function HistoricalEventStage({ state, dispatch }: HistoricalEventStagePr
 
           {state.phase === "event-answering" && answeringTeam ? (
             <div className="flex flex-1 flex-col">
-              <div className="mt-4 flex items-center gap-3 rounded-xl bg-white/10 p-3"><TeamBadge slot={answeringTeam.slot} size="md" /><span className="font-extrabold">Nhóm {answeringTeam.slot}</span></div>
+              <div className="mt-4 flex items-center gap-3 rounded-xl bg-white/10 p-3"><TeamBadge slot={answeringTeam.slot} size="md" /><span className="font-extrabold">{answeringTeam.name}</span></div>
               <p className="mt-3 text-sm leading-6 text-white/65">Đồng hồ đang tạm dừng. Host nhập đúng câu trả lời đội đã nói.</p>
               <div className="mt-auto grid gap-2">
                 <Button variant="primary" size="lg" disabled={!answerComplete} onClick={submitAnswer}>Chốt câu trả lời</Button>
@@ -324,7 +324,7 @@ export function HistoricalEventStage({ state, dispatch }: HistoricalEventStagePr
           {isResult ? (
             <div className="flex flex-1 flex-col items-center justify-center text-center">
               <TrophyIcon className="size-10 text-amber" />
-              <p className="mt-4 text-xl font-extrabold">{winner ? `Nhóm ${winner.slot} ghi điểm` : "Biến cố đã khép lại"}</p>
+              <p className="mt-4 text-xl font-extrabold">{winner ? `${winner.name} ghi điểm` : "Biến cố đã khép lại"}</p>
               <p className="mt-2 text-sm leading-6 text-white/60">Đáp án chuẩn đã được điền trên bảng.</p>
               <Button variant="primary" size="lg" onClick={() => dispatch({ type: "END_EVENT" })} className="mt-6 w-full">{event.checkpoint === 18 ? "Xem tổng kết" : "Trở lại bản đồ"}</Button>
             </div>

@@ -72,7 +72,7 @@ export function GameScreen({ state, canUndo, dispatch }: GameScreenProps) {
         {isSelecting ? (
           <div className="flex min-h-0 flex-1 flex-col gap-2">
             <div className="flex shrink-0 items-center justify-between gap-3 rounded-2xl border border-line bg-paper px-4 py-2.5">
-              <p className="text-base font-semibold text-ink">Lượt của <span className="font-extrabold">Nhóm {currentTeam?.slot ?? 1}</span> · chọn một địa bàn còn trống</p>
+              <p className="text-base font-semibold text-ink">Lượt của <span className="font-extrabold">{currentTeam?.name ?? "Nhóm 1"}</span> · chọn một địa bàn còn trống</p>
               {state.pendingOpportunity ? (
                 <span className="rounded-full bg-amber-soft px-4 py-2 text-sm font-extrabold text-ink">{OPPORTUNITY_LABELS[state.pendingOpportunity.effect].name} · {OPPORTUNITY_LABELS[state.pendingOpportunity.effect].description}</span>
               ) : currentTeam && !currentTeam.opportunityUsed ? (

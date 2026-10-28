@@ -40,7 +40,7 @@ export function ScoreStrip({ state }: ScoreStripProps) {
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline justify-between gap-2">
                 <p className="truncate text-sm font-semibold text-ink">
-                  Nhóm {team.slot}
+                  {team.name}
                 </p>
                 <p
                   data-testid={`team-score-${team.id}`}

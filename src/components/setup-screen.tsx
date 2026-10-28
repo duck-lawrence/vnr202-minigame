@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRightIcon, MapIcon } from "@/components/icons";
+import { ChevronRightIcon, MapIcon, UsersIcon, XIcon } from "@/components/icons";
+import { TeamBadge } from "@/components/team-badge";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_TEAM_NAMES, MAX_TEAMS, MIN_TEAMS } from "@/data/teams";
-import { cn } from "@/lib/cn";
-import { validateGameData } from "@/lib/validation";
+import { validateGameData, validateTeamNames } from "@/lib/validation";
 import type { StoredGame } from "@/types/game";
 
 interface SetupScreenProps {
@@ -26,8 +26,9 @@ export function SetupScreen({
   onResume,
   onDiscardSaved,
 }: SetupScreenProps) {
-  const [teamCount, setTeamCount] = useState(MAX_TEAMS);
-  const canStart = DATA_ERRORS.length === 0;
+  const [teamNames, setTeamNames] = useState<string[]>(() => [...DEFAULT_TEAM_NAMES]);
+  const teamErrors = validateTeamNames(teamNames);
+  const canStart = DATA_ERRORS.length === 0 && teamErrors.length === 0;
 
   const savedState = savedGame?.store.present;
   const savedQuestionCount = savedState?.usedQuestionIds.length ?? 0;
@@ -84,30 +85,70 @@ export function SetupScreen({
           ) : null}
 
           <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-terracotta">Thiết lập trận đấu</p>
-          <h2 className="display mt-2 text-4xl text-ink">Chọn số nhóm</h2>
+          <h2 className="display mt-2 text-4xl text-ink">Đặt tên nhóm</h2>
+          <p className="mt-2 text-sm font-medium leading-6 text-muted">
+            Thêm từ {MIN_TEAMS} đến {MAX_TEAMS} nhóm và nhập tên dùng trong suốt trận đấu.
+          </p>
 
-          <div className="mt-5 grid grid-cols-5 gap-2">
-            {Array.from({ length: MAX_TEAMS - MIN_TEAMS + 1 }, (_, index) => {
-              const value = MIN_TEAMS + index;
-              const active = teamCount === value;
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setTeamCount(value)}
-                  className={cn(
-                    "flex min-h-12 items-center justify-center rounded-2xl border text-lg font-semibold transition",
-                    active
-                      ? "border-terracotta bg-terracotta-soft text-terracotta-dark"
-                      : "border-line bg-paper-soft text-muted hover:border-line-strong hover:text-ink",
-                  )}
-                  aria-pressed={active}
-                >
-                  {value}
-                </button>
-              );
-            })}
-          </div>
+          <form
+            className="mt-5"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (canStart) onStart(teamNames.map((name) => name.trim()));
+            }}
+          >
+            <div className="grid max-h-[264px] gap-2 overflow-y-auto pr-1">
+              {teamNames.map((name, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <TeamBadge slot={index + 1} size="md" />
+                  <label className="sr-only" htmlFor={`team-name-${index}`}>
+                    Tên nhóm {index + 1}
+                  </label>
+                  <input
+                    id={`team-name-${index}`}
+                    type="text"
+                    value={name}
+                    maxLength={24}
+                    autoComplete="off"
+                    placeholder={`Tên nhóm ${index + 1}`}
+                    onChange={(event) => {
+                      const nextNames = [...teamNames];
+                      nextNames[index] = event.target.value;
+                      setTeamNames(nextNames);
+                    }}
+                    className="min-h-12 min-w-0 flex-1 rounded-2xl border border-line bg-paper-soft px-4 font-semibold text-ink outline-none transition placeholder:text-muted/70 focus:border-terracotta focus:ring-2 focus:ring-terracotta/15"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setTeamNames(teamNames.filter((_, teamIndex) => teamIndex !== index))}
+                    disabled={teamNames.length <= MIN_TEAMS}
+                    className="flex size-11 shrink-0 items-center justify-center rounded-xl text-muted transition hover:bg-red-soft hover:text-red disabled:cursor-not-allowed disabled:opacity-25"
+                    aria-label={`Xóa nhóm ${index + 1}`}
+                    title={teamNames.length <= MIN_TEAMS ? `Cần ít nhất ${MIN_TEAMS} nhóm` : "Xóa nhóm"}
+                  >
+                    <XIcon className="size-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {teamNames.length < MAX_TEAMS ? (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setTeamNames([...teamNames, ""])}
+                className="mt-2 w-full border border-dashed border-line"
+              >
+                <UsersIcon className="size-4" />
+                Thêm nhóm
+              </Button>
+            ) : null}
+
+            {teamNames.some((name) => name.trim()) && teamErrors.length > 0 ? (
+              <div className="mt-3 rounded-xl border border-amber/30 bg-amber-soft px-3 py-2 text-xs font-semibold leading-5 text-ink-soft">
+                {teamErrors.map((error) => <p key={error}>{error}</p>)}
+              </div>
+            ) : null}
 
           {DATA_ERRORS.length > 0 ? (
             <div className="mt-4 rounded-xl border border-red/30 bg-red-soft px-3 py-2 text-xs leading-5 text-red">
@@ -117,16 +158,17 @@ export function SetupScreen({
             </div>
           ) : null}
 
-          <Button
-            size="lg"
-            variant="primary"
-            onClick={() => onStart(DEFAULT_TEAM_NAMES.slice(0, teamCount))}
-            disabled={!canStart}
-            className="mt-6 w-full justify-between rounded-2xl px-5"
-          >
-            <span>Bắt đầu</span>
-            <ChevronRightIcon className="size-5" />
-          </Button>
+            <Button
+              type="submit"
+              size="lg"
+              variant="primary"
+              disabled={!canStart}
+              className="mt-5 w-full justify-between rounded-2xl px-5"
+            >
+              <span>Bắt đầu</span>
+              <ChevronRightIcon className="size-5" />
+            </Button>
+          </form>
 
           <Link href="/huong-dan" className="mt-3 flex min-h-12 items-center justify-center rounded-2xl border-2 border-line bg-paper-soft text-base font-bold text-ink transition hover:border-terracotta">
             Xem hướng dẫn cách chơi

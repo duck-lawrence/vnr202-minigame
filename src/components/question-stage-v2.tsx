@@ -126,7 +126,7 @@ export function QuestionStageV2({ state, dispatch }: QuestionStageProps) {
             <TeamBadge slot={answeringTeam.slot} size="md" />
             <div>
               <p className="text-sm font-bold text-ink">
-                {state.phase === "steal-question" ? "Cướp quyền" : "Lượt chính"} · Nhóm {answeringTeam.slot}
+                {state.phase === "steal-question" ? "Cướp quyền" : "Lượt chính"} · {answeringTeam.name}
               </p>
               <p className="text-sm text-muted">
                 {state.phase === "steal-question" ? `Lượt trả lời cướp ${state.stealAttempts + 1}/2` : question.topic}
@@ -163,7 +163,7 @@ export function QuestionStageV2({ state, dispatch }: QuestionStageProps) {
           <div className="mt-3 rounded-2xl border border-green/25 bg-green-soft px-4 py-3">
             {state.lastResult && resultTeam && state.lastResult.points > 0 ? (
               <p className="mb-1 text-sm font-extrabold text-ink">
-                Nhóm {resultTeam.slot} · +{state.lastResult.points} điểm
+                {resultTeam.name} · +{state.lastResult.points} điểm
                 {state.lastResult.journeyBonus ? " · Hoàn thành Hành trình lịch sử" : ""}
               </p>
             ) : null}
@@ -216,7 +216,7 @@ export function QuestionStageV2({ state, dispatch }: QuestionStageProps) {
               <div className="mt-2 grid grid-cols-5 gap-2">
                 {eligibleTeams.map((team) => (
                   <button key={team.id} type="button" onClick={() => dispatch({ type: "SELECT_STEAL_TEAM", teamId: team.id })} className="flex items-center justify-center gap-2 rounded-xl border border-line bg-paper px-3 py-2.5 font-bold text-ink hover:border-terracotta">
-                    <TeamBadge slot={team.slot} size="sm" /> Nhóm {team.slot}
+                    <TeamBadge slot={team.slot} size="sm" /> {team.name}
                   </button>
                 ))}
               </div>

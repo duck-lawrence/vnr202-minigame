@@ -42,11 +42,4 @@ export const TEAM_DEFINITIONS: TeamDefinition[] = [
   },
 ];
 
-export const DEFAULT_TEAM_NAMES = [
-  "Nhóm 1",
-  "Nhóm 2",
-  "Nhóm 3",
-  "Nhóm 4",
-  "Nhóm 5",
-  "Nhóm 6",
-];
+export const DEFAULT_TEAM_NAMES = ["N01", "N02", "N04", "N05", "N06", "N07"];

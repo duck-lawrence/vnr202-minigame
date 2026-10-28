@@ -29,7 +29,7 @@ export function FinalResults({ state, onReset }: FinalResultsProps) {
             Kết thúc · {state.usedQuestionIds.length}/18 câu
           </p>
           <h1 className="display mt-2 text-[clamp(3.2rem,6vw,5.4rem)] leading-none text-ink">
-            {isJoint ? "Đồng hạng 1" : `Nhóm ${winner?.slot ?? 1} thắng`}
+            {isJoint ? "Đồng hạng 1" : `${winner?.name ?? "Nhóm 1"} thắng`}
           </h1>
           {winner ? (
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -40,7 +40,7 @@ export function FinalResults({ state, onReset }: FinalResultsProps) {
                 >
                   <TeamBadge slot={team.slot} size="sm" />
                   <span className="text-sm font-semibold text-ink">
-                    Nhóm {team.slot}
+                    {team.name}
                   </span>
                 </span>
               ))}
@@ -81,7 +81,7 @@ export function FinalResults({ state, onReset }: FinalResultsProps) {
                   <TeamBadge slot={team.slot} size="md" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-ink">
-                      Nhóm {team.slot}
+                      {team.name}
                     </p>
                     <p className="text-sm text-muted">
                       {team.territoryCount} địa bàn · {state.journeyBonusAwards.includes(team.id) ? "Hoàn thành Hành trình" : "Chưa đủ 3 chương"}
